@@ -104,7 +104,8 @@
 
 
         <button type="button" style="display: flex;
-       justify-content: center;" class="col-lg-3 col-md-5  col-ms-12 Back">Back</button>
+       justify-content: center;" class="col-lg-3 col-md-5  col-ms-12 Back"> <a style="color: inherit; 
+    text-decoration: inherit;" href="{{ url()->previous() }}">Back</a> </button>
 
 
 

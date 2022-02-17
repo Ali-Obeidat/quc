@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Quc;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class QucController extends Controller
 {
@@ -92,6 +94,7 @@ class QucController extends Controller
             $request->session()->put('Quc', $Quc);
             // return $validatedData['Status'];
             if ($validatedData['Status'] == 'Student') {
+                
                 return redirect('/quc/Student');
             }else{
                 return redirect('/quc/EmploymentStatus');
@@ -103,28 +106,79 @@ class QucController extends Controller
     public function Step5(Request $request)
     {
         
-        return view('profail.last');
+        return view('profail.Declarations');
     }
 
     public function CreateStep5(Request $request)
     {
         $validatedData = $request->validate([
-            'Status' => 'required',
-           
+            'choice1' => 'required',
+            'choice2' => 'required',
+            'choice3' => 'required',
+            'choice4' => 'required',
+            'checkbox' => 'required',
         ]);
+        $Declarations = ['agree'=>1];
+        // return $Declarations;
         $Quc = $request->session()->get('Quc');
-            $Quc->fill($validatedData);
+            $Quc->fill($Declarations);
 
             $request->session()->put('Quc', $Quc);
-            // return $validatedData['Status'];
-            if ($validatedData['Status'] == 'Student') {
-                return redirect('/quc/Student');
+            // return session()->get('Quc')->Student;
+            if (session()->get('Quc')->Status == 'Student') {
+                // return "asds";
+                Quc::create([
+                    'user_id'=> Auth::user()->id,
+                    'Income'=>session()->get('Quc')->Income,
+                    'Investments'=>session()->get('Quc')->Investments,
+                    'Available_Amount'=>session()->get('Quc')->Available_Amount,
+                    'Status'=>session()->get('Quc')->Status,
+                    'Student'=>session()->get('Quc')->Student,
+                    'agree'=>session()->get('Quc')->agree,
+                ]);
+                Session::forget([
+                    'Income',
+                    'Investments',
+                    'Available_Amount',
+                    'Status',
+                    'Student',
+                    'agree',
+            ]);
+                // return session()->get('Quc');
+                return redirect('/quc/step6');
             }else{
-                return redirect('/quc/EmploymentStatus');
+                Quc::create([
+                    'user_id'=> Auth::user()->id,
+                    'Income'=>session()->get('Quc')->Income,
+                    'Investments'=>session()->get('Quc')->Investments,
+                    'Available_Amount'=>session()->get('Quc')->Available_Amount,
+                    'Status'=>session()->get('Quc')->Status,
+                    'Industry'=>session()->get('Quc')->Industry,
+                    'Funds'=>session()->get('Quc')->Funds,
+                    'agree'=>session()->get('Quc')->agree,
+                ]);
+                Session::forget([
+                    'Income',
+                    'Investments',
+                    'Available_Amount',
+                    'Status',
+                    'Industry',
+                    'Funds',
+                    'agree',
+            ]);
+                return redirect('/quc/step6');
             }
+          
+            // return $validatedData['Status'];
             // return session()->get('Quc');
-        return redirect('/quc/step4');
+       
 
+    }
+    public function Step6(Request $request)
+    {
+        // return session()->get('Quc');
+        
+        return view('profail.last');
     }
     public function Student(Request $request)
     {

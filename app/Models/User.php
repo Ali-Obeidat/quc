@@ -45,4 +45,17 @@ class User extends Authenticatable
         return $this->hasOne(Quc::class);
         
     }
+    public function agreed(){
+        if (!empty($this->quc) ) {
+            foreach ($this->quc as $value ) {
+                return $value;
+                if( '1' == $value->agree){
+                    return true;
+                }
+                return false;
+            }
+        }
+        
+        
+    }
 }
